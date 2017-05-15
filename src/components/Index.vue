@@ -1,15 +1,59 @@
 <template>
-  <div class="hello">
-    {{ hello }}
+  <div>
+    <video src=""> video </video>
+    <div class="main">
+      <div class="filter">
+        <GeoSelect></GeoSelect>
+      </div>
+      <div class="contents">
+        <div v-if="loading">loading</div>
+        <div v-if="error">{{error.msg}}</div>
+        <div v-if="contents">
+          <ul>
+            <li v-for="item in contents">
+              {{ item.name }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
+
 </template>
 
 <script>
+import GeoSelect from './geoSelect'
+import VueResource from 'vue-resource'
+import Vue from 'vue'
+Vue.use(VueResource)
 export default {
   name: 'hello',
+  components: {
+    GeoSelect
+  },
   data () {
     return {
-      hello: 'Hello VUE!!'
+      loading: false,
+      contents: null,
+      error: null
+    }
+  },
+  created () {
+    this.fetchData()
+  },
+  methods: {
+    fetchData () {
+      this.error = this.contents = null
+      this.loading = true
+      this.$http.get('./assets/contents.json').then(response => {
+        this.loading = false
+        this.contents = response
+      }, response => {
+        this.error = {
+          msg: 'Api request error',
+          contents: response
+        }
+      })
     }
   }
 }
