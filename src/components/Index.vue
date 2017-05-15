@@ -45,13 +45,15 @@ export default {
     fetchData () {
       this.error = this.contents = null
       this.loading = true
-      this.$http.get('./assets/contents.json').then(response => {
+      this.$http.get('/static/contents.json').then(response => {
         this.loading = false
-        this.contents = response
+        this.contents = JSON.parse(response.bodyText)
+        console.log(this.contents)
       }, response => {
+        this.loading = false
         this.error = {
           msg: 'Api request error',
-          contents: response
+          contents: response.bodyText
         }
       })
     }
