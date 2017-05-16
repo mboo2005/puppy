@@ -16,6 +16,9 @@ import VueResource from 'vue-resource'
 import multiselect from 'vue-multiselect'
 import PuppyList from './PuppyList'
 import Vue from 'vue'
+import breedSelectOptions from '../assets/breedSelectOptions.json'
+import geoSelectOptions from '../assets/geoSelectOptions.json'
+
 Vue.use(VueResource)
 
 export default {
@@ -26,37 +29,31 @@ export default {
   },
   data () {
     return {
-      options: [
-        {
-          name: '附近',
-          values: [
-            { name: '附近', value: '0' },
-            { name: '1000m', value: '1' }
-          ]
-        },
-        {
-          name: '海淀区',
-          values: [
-            { name: '中关村', value: '100' },
-            { name: '五道口', value: '101' }
-          ]
-        },
-        {
-          name: '西城区',
-          values: [
-            { name: '天安门', value: '200' },
-            { name: '故宫', value: '201' }
-          ]
-        }
-      ],
-      contents: 'loading',
-      geoValue: { name: '中关村', value: '100' }
+      options: geoSelectOptions,
+      geoValue: null,
+      genderOptions: [{name: '公', value: 1}, {name: '母', value: 0}],
+      genderValue: 0,
+      breedOptions: breedSelectOptions,
+      breedValue: null,
+      contents: 'loading'
     }
   },
   watch: {
     geoValue: function (val) {
       this.fetchData(val.value)
     }
+  },
+  created () {
+    navigator.geolocation.getCurrentPosition(function (success) {
+      console.log(success)
+      this.geoValue = success
+    },
+    function (failure) {
+      console.log(failure)
+      if (failure.message.indexOf('Only secure origins are allowed') === 0) {
+      // Secure Origin issue.
+      }
+    })
   },
   mounted () {
     this.fetchData(0)
@@ -65,7 +62,7 @@ export default {
     fetchData () {
       // alert(this.geoValue.value)
       // console.log(val)
-      let val = this.geoValue.value
+      let val = (this.geoValue !== null) ? this.geoValue.value : 0
       this.$http.get('/static/contents.json?v=' + val).then(response => {
         this.contents = JSON.parse(response.bodyText)
       }, error => {

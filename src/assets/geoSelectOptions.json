@@ -1,0 +1,23 @@
+[
+  {
+    "name": "附近",
+    "values": [
+            { "name": "附近", "value": 0 },
+            { "name": "1000m", "value": 1 }
+    ]
+  },
+  {
+    "name": "海淀区",
+    "values": [
+            { "name": "中关村", "value": 100 },
+            { "name": "五道口", "value": 101 }
+    ]
+  },
+  {
+    "name": "西城区",
+    "values": [
+            { "name": "天安门", "value": 200 },
+            { "name": "故宫", "value": 201 }
+    ]
+  }
+]

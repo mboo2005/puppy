@@ -36,13 +36,17 @@ module.exports = {
           formatter: require('eslint-friendly-formatter')
         }
       },
+      // {
+      //     test: /\.json/,
+      //     loader: 'json-loader'
+      // },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: vueLoaderConfig
       },
       {
-        test: /\.(js|json)$/,
+        test: /\.(js)$/,
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test')]
       },
