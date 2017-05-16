@@ -1,60 +1,79 @@
 <template>
   <div>
-    <video src=""> video </video>
+    <!-- <video src=""> video </video> -->
     <div class="main">
       <div class="filter">
-        <GeoSelect></GeoSelect>
+        <multiselect v-model="geoValue" :options="options"  group-values="values" group-label="name" placeholder="Type to search" track-by="name" label="name"><span slot="noResult">Oops! No elements found. Consider changing the search query.</span></multiselect>{{geoValue}}
       </div>
-      <div class="contents">
-        <div v-if="loading">loading</div>
-        <div v-if="error">{{error.msg}}</div>
-        <div v-if="contents">
-          <ul>
-            <li v-for="item in contents">
-              {{ item.name }}
-            </li>
-          </ul>
-        </div>
-      </div>
+      <PuppyList :contents="contents"></PuppyList>
     </div>
   </div>
 
 </template>
 
 <script>
-import GeoSelect from './geoSelect'
 import VueResource from 'vue-resource'
+import multiselect from 'vue-multiselect'
+import PuppyList from './PuppyList'
 import Vue from 'vue'
 Vue.use(VueResource)
+
 export default {
   name: 'hello',
   components: {
-    GeoSelect
+    PuppyList,
+    multiselect
   },
   data () {
     return {
-      loading: false,
-      contents: null,
-      error: null
+      options: [
+        {
+          name: '附近',
+          values: [
+            { name: '附近', value: '0' },
+            { name: '1000m', value: '1' }
+          ]
+        },
+        {
+          name: '海淀区',
+          values: [
+            { name: '中关村', value: '100' },
+            { name: '五道口', value: '101' }
+          ]
+        },
+        {
+          name: '西城区',
+          values: [
+            { name: '天安门', value: '200' },
+            { name: '故宫', value: '201' }
+          ]
+        }
+      ],
+      contents: 'loading',
+      geoValue: { name: '中关村', value: '100' }
     }
   },
-  created () {
-    this.fetchData()
+  watch: {
+    geoValue: function (val) {
+      this.fetchData(val.value)
+    }
+  },
+  mounted () {
+    this.fetchData(0)
   },
   methods: {
     fetchData () {
-      this.error = this.contents = null
-      this.loading = true
-      this.$http.get('/static/contents.json').then(response => {
-        this.loading = false
+      // alert(this.geoValue.value)
+      // console.log(val)
+      let val = this.geoValue.value
+      this.$http.get('/static/contents.json?v=' + val).then(response => {
         this.contents = JSON.parse(response.bodyText)
-        console.log(this.contents)
-      }, response => {
-        this.loading = false
-        this.error = {
-          msg: 'Api request error',
-          contents: response.bodyText
-        }
+      }, error => {
+        // this.contents = {
+        //   msg: 'Api request error',
+        //   contents: response.bodyText
+        // }
+        console.log(error)
       })
     }
   }
@@ -62,7 +81,7 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style>
 h1, h2 {
   font-weight: normal;
   color:red

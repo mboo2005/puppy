@@ -1,7 +1,6 @@
 <template>
 	<div>
-	  <label class="typo__label">Groups</label>
-	  <multiselect v-model="value" :options="options"  group-values="values" group-label="name" placeholder="Type to search" track-by="name" label="name"><span slot="noResult">Oops! No elements found. Consider changing the search query.</span></multiselect>
+	  <multiselect v-model="geo" :options="options"  group-values="values" group-label="name" placeholder="Type to search" track-by="name" label="name"><span slot="noResult">Oops! No elements found. Consider changing the search query.</span></multiselect>
 	  
 	</div>
 </template>
@@ -39,6 +38,11 @@ export default {
         }
       ],
       value: []
+    }
+  },
+  methods: {
+    dispatchAction (actionName) {
+      console.log(actionName)
     }
   }
 }
